@@ -1,35 +1,36 @@
 pipeline {
     agent any
-    tools {
-        terraform 'terraform'
-    }
     stages {
-        stage('Terraform Apply') {
-            when {
-                expression {
-                    return params.action == 'apply'
-                }
-            }
+        stage('Build') {
             steps {
-                git 'https://github.com/anaraashka/Jenkins-CICD.git'
-
-                sh 'terraform init -no-color'
-
-                echo "terraform action from paratmetr is --> ${action}"
-
-                sh "terraform ${action} --auto-approve"
+              sh '''
+              echo "Planning infrastructure"
+              cd terraform
+              terraform init
+              terraform plan
+              '''
             }
         }
-        stage('Terraform Destroy') {
-            when {
-                expression {
-                    return params.action == 'destroy'
-                }
-            }
-            steps {
-                echo "terraform action from paratmetr is --> ${action}"
-                sh "terraform ${action} --auto-approve"
+    stage('Deploy') {
+        steps {
+            sh '''
+            echo "Deploying infrastructure..."
+            cd terraform
+            terraform apply -auto-approve
+            '''
             }
         }
+    stage('finish') {
+        steps {
+            sh '''
+           echo "pipeline finished"
+            '''
+            }
+        }
+    }
+    post {
+      always {
+        deleteDir()
+      }
     }
 }
