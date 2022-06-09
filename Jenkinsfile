@@ -17,7 +17,7 @@ pipeline {
 
                 echo "terraform action from paratmetr is --> ${action}"
 
-                sh "${action}"
+                sh "terraform ${action} --auto-approve"
             }
         }
         stage('Terraform Destroy') {
@@ -28,7 +28,7 @@ pipeline {
             }
             steps {
                 echo "terraform action from paratmetr is --> ${action}"
-                sh "${action}"
+                sh "terraform ${action} --auto-approve"
             }
         }
     }
