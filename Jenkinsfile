@@ -5,7 +5,6 @@ pipeline {
             steps {
               sh '''
               echo "Planning infrastructure"
-              cd terraform
               terraform init
               terraform plan
               '''
@@ -15,7 +14,6 @@ pipeline {
         steps {
             sh '''
             echo "Deploying infrastructure..."
-            cd terraform
             terraform apply -auto-approve
             '''
             }
